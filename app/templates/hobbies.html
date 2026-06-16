@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-hero">
+    <p class="eyebrow">Outside the editor</p>
+    <h1>Hobbies that keep me grounded.</h1>
+    <p>
+        A few things I come back to when I want something tactile, cozy, or simply
+        far away from a compile error.
+    </p>
+</section>
+
+<section class="section hobby-page-grid">
+    {% for hobby in hobbies %}
+    <article class="hobby-feature">
+        <img src="{{ url_for('static', filename=hobby.image) }}" alt="{{ hobby.name }}">
+        <div>
+            <p class="card-label">Hobby {{ loop.index }}</p>
+            <h2>{{ hobby.name }}</h2>
+            <p>{{ hobby.summary }}</p>
+        </div>
+    </article>
+    {% endfor %}
+</section>
+{% endblock %}

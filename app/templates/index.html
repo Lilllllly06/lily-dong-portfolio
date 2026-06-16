@@ -1,40 +1,140 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta property="og:title" content="Personal Portfolio">
-    <meta property="og:description" content="My Personal Portfolio">
-    <meta property="og:url" content="{{ url }}">
-
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
-        rel="stylesheet">
-
-    <link lang='sass' rel="stylesheet" href="./static/styles/main.css">
-    <link rel='icon' href='./static/img/favicon.ico' type='image/x-icon' />
-    <title>{{ title }}</title>
-</head>
-
-<body>
-    <header class="nav-bar">
-        <div class="nav-content">
-            <a href="/">
-                <div class="nav-logo">
-                    <img src="./static/img/logo.svg" />
-                </div>
-            </a>
+{% block content %}
+<section class="hero">
+    <div class="hero-copy">
+        <p class="eyebrow">Computer Engineering - University of Waterloo</p>
+        <h1>Hi, I am Lily Dong.</h1>
+        <p class="hero-text">
+            I am a second-year computer engineering student who likes building practical,
+            human-centered software. Lately, that has meant full-stack product work,
+            model tooling, RAG pipelines, and small details that make technical workflows
+            feel smoother.
+        </p>
+        <div class="hero-actions">
+            <a class="primary-link" href="https://github.com/Lilllllly06">GitHub</a>
+            <a class="secondary-link" href="#experience">Experience</a>
         </div>
-    </header>
-
-    <div class="profile">
-        <div id="profile-picture" class="profile-picture">
-            <img src="./static/img/logo.jpg">
-        </div>
-        <h1>{{ title }}</h1>
     </div>
-</body>
-</html>
+    <div class="portrait-wrap">
+        <img src="{{ url_for('static', filename='img/yuezhen-dong.jpg') }}" alt="Portrait of Lily Dong">
+    </div>
+</section>
+
+<section class="section about-grid" id="about">
+    <div>
+        <p class="section-kicker">About</p>
+        <h2>Engineering with a soft spot for useful things.</h2>
+    </div>
+    <div class="about-copy">
+        <p>
+            I like projects that combine systems thinking with a human outcome:
+            faster setup flows, clearer developer tools, smarter inventory helpers,
+            or data views that make a messy dataset easier to understand.
+        </p>
+        <p>
+            Outside of code, I rotate between workouts, crochet, baking, and collecting
+            little stories from the places I visit. The common thread is probably patience:
+            keep showing up, adjust the pattern, taste-test when needed.
+        </p>
+    </div>
+</section>
+
+<section class="section skill-strip" aria-label="Relevant skills">
+    {% for skill in skills %}
+    <span>{{ skill }}</span>
+    {% endfor %}
+</section>
+
+<section class="section split" id="experience">
+    <div class="section-heading">
+        <p class="section-kicker">Experience</p>
+        <h2>Previous work</h2>
+    </div>
+    <div class="timeline">
+        {% for experience in experiences %}
+        <article class="timeline-item">
+            <div class="timeline-topline">
+                <div>
+                    <h3>{{ experience.role }}</h3>
+                    <p class="organization">{{ experience.company }}</p>
+                </div>
+                <span>{{ experience.period }}</span>
+            </div>
+            <p class="tools">{{ experience.tools }}</p>
+            <p>{{ experience.summary }}</p>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="section split" id="education">
+    <div class="section-heading">
+        <p class="section-kicker">Education</p>
+        <h2>Current studies</h2>
+    </div>
+    <div class="stack-list">
+        {% for item in education %}
+        <article class="info-card">
+            <p class="card-label">{{ item.period }}</p>
+            <h3>{{ item.school }}</h3>
+            <p class="organization">{{ item.program }} - {{ item.location }}</p>
+            <p>{{ item.notes }}</p>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="section split" id="projects">
+    <div class="section-heading">
+        <p class="section-kicker">Projects</p>
+        <h2>Things I have built</h2>
+    </div>
+    <div class="project-grid">
+        {% for project in projects %}
+        <article class="info-card project-card">
+            <h3>{{ project.name }}</h3>
+            <p class="tools">{{ project.stack }}</p>
+            <p>{{ project.summary }}</p>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="section hobby-preview">
+    <div class="section-heading">
+        <p class="section-kicker">Hobbies</p>
+        <h2>What I do when my laptop cools down</h2>
+    </div>
+    <div class="hobby-grid">
+        {% for hobby in hobbies %}
+        <article class="hobby-card">
+            <img src="{{ url_for('static', filename=hobby.image) }}" alt="{{ hobby.name }}">
+            <div>
+                <h3>{{ hobby.name }}</h3>
+                <p>{{ hobby.summary }}</p>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    <a class="text-link" href="{{ url_for('hobbies') }}">See the hobbies page</a>
+</section>
+
+<section class="section travel-section" id="places">
+    <div class="section-heading">
+        <p class="section-kicker">Places</p>
+        <h2>Visited map</h2>
+    </div>
+    <div class="travel-layout">
+        <img class="travel-map" src="{{ url_for('static', filename='img/places-visited.png') }}" alt="Illustrated map of places Lily has visited">
+        <div class="place-list">
+            {% for place in places %}
+            <article>
+                <h3>{{ place.name }}</h3>
+                <p>{{ place.detail }}</p>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
