@@ -1,11 +1,188 @@
 import os
-from flask import Flask, render_template, request
+
 from dotenv import load_dotenv
+from flask import Flask, render_template
 
 load_dotenv()
 app = Flask(__name__)
 
 
-@app.route('/')
+NAV_ITEMS = [
+    {"label": "Home", "endpoint": "index"},
+    {"label": "About", "endpoint": "index", "fragment": "about"},
+    {"label": "Experience", "endpoint": "index", "fragment": "experience"},
+    {"label": "Projects", "endpoint": "index", "fragment": "projects"},
+    {"label": "Places", "endpoint": "index", "fragment": "places"},
+    {"label": "Hobbies", "endpoint": "hobbies"},
+]
+
+SKILLS = [
+    "Python",
+    "TypeScript",
+    "React",
+    "Flask",
+    "FastAPI",
+    "PyTorch",
+    "LLM APIs",
+    "Ruby on Rails",
+    "PostgreSQL",
+    "Docker",
+]
+
+EXPERIENCES = [
+    {
+        "role": "Software Engineering Intern",
+        "company": "Shopify",
+        "period": "May 2026 - Aug 2026",
+        "tools": "Python, TypeScript, React Native, Ruby on Rails, RAG, LLM, OAuth, BLE",
+        "summary": (
+            "Contributed to agentic developer tooling infrastructure, including RAG-based "
+            "context retrieval and prompt orchestration that improved the relevance "
+            "of context sent to LLM workflows."
+        ),
+    },
+    {
+        "role": "Software Engineering Intern",
+        "company": "Shopify",
+        "period": "Sep 2025 - Dec 2025",
+        "tools": "React, TypeScript, Ruby on Rails, GraphQL",
+        "summary": (
+            "Built full-stack retail admin features, including staff assignment "
+            "workflows with GraphQL pagination and cross-system data contracts."
+        ),
+    },
+    {
+        "role": "Web Developer Co-op",
+        "company": "AGF Investments",
+        "period": "Jan 2025 - Apr 2025",
+        "tools": "Java, Spring Boot, Maven, Apache POI, Git",
+        "summary": (
+            "Developed a Spring Boot ScoreCard application that automated XLSX "
+            "report generation for internal teams and reduced manual spreadsheet work."
+        ),
+    },
+]
+
+EDUCATION = [
+    {
+        "school": "University of Waterloo",
+        "program": "BASc in Computer Engineering",
+        "period": "Expected graduation: May 2028",
+        "location": "Waterloo, ON",
+        "notes": (
+            "Second-year computer engineering student interested in full-stack systems, "
+            "model tooling, and products that make technical work feel more usable."
+        ),
+    }
+]
+
+PROJECTS = [
+    {
+        "name": "Multimodal Agent Evaluation Sandbox",
+        "stack": "Python, PyTorch, Gemini API, FastAPI, React, PostgreSQL, Docker",
+        "summary": (
+            "A benchmark environment for evaluating software agents across text, image, "
+            "code, and tabular reasoning tasks."
+        ),
+    },
+    {
+        "name": "Merchant Inventory Assistant",
+        "stack": "Python, TypeScript, LLM APIs, scikit-learn, React, Node/Express",
+        "summary": (
+            "An LLM-powered inventory assistant that routes merchant questions into "
+            "structured workflow tools and database queries."
+        ),
+    },
+    {
+        "name": "3D Data Sandbox",
+        "stack": "Electron, Node.js, Three.js, PapaParse",
+        "summary": (
+            "A desktop app for offline 3D visualization of CSV and JSON datasets, "
+            "with clustering, outlier detection, and interactive highlighting."
+        ),
+    },
+]
+
+HOBBIES = [
+    {
+        "name": "Workout Reset",
+        "image": "img/hobby-workout.png",
+        "summary": (
+            "I like workouts that feel sustainable: strength training, a good playlist, "
+            "and enough movement to clear my head without pretending I am training for the Olympics."
+        ),
+    },
+    {
+        "name": "Crochet Projects",
+        "image": "img/hobby-crochet.png",
+        "summary": (
+            "Crochet is my favorite kind of slow problem-solving. I like choosing colors, "
+            "building stitch by stitch, and ending up with something soft and useful."
+        ),
+    },
+    {
+        "name": "Weekend Baking",
+        "image": "img/hobby-baking.png",
+        "summary": (
+            "Baking is where I get to be precise and cozy at the same time. Cookies, cakes, "
+            "and small treats are my favorite excuse to share something warm."
+        ),
+    },
+]
+
+PLACES = [
+    {
+        "name": "Orlando, Florida",
+        "detail": "Theme parks, sunshine, and one very memorable Disney trip.",
+    },
+    {
+        "name": "Romania",
+        "detail": "A physics tournament trip with historical streets and competition memories.",
+    },
+    {
+        "name": "Beijing, China",
+        "detail": "Traditional food, local flavors, and landmarks with a lot of history.",
+    },
+    {
+        "name": "Shanghai, China",
+        "detail": "Bund views, city lights, and a magical Shanghai Disney day.",
+    },
+    {
+        "name": "Hong Kong, China",
+        "detail": "Disneyland, dense city views, and excellent food around every corner.",
+    },
+    {
+        "name": "Suzhou, China",
+        "detail": "Classical gardens, canals, and quiet old streets.",
+    },
+]
+
+
+@app.context_processor
+def inject_navigation():
+    return {"nav_items": NAV_ITEMS}
+
+
+@app.route("/")
 def index():
-    return render_template('index.html', title="MLH Fellow", url=os.getenv("URL"))
+    return render_template(
+        "index.html",
+        title="Portfolio",
+        url=os.getenv("URL"),
+        skills=SKILLS,
+        experiences=EXPERIENCES,
+        education=EDUCATION,
+        projects=PROJECTS,
+        hobbies=HOBBIES,
+        places=PLACES,
+    )
+
+
+@app.route("/hobbies")
+def hobbies():
+    return render_template(
+        "hobbies.html",
+        title="Hobbies",
+        url=os.getenv("URL"),
+        hobbies=HOBBIES,
+    )
