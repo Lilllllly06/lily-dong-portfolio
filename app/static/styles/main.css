@@ -428,6 +428,134 @@ h3 {
     padding: clamp(24px, 5vw, 52px);
 }
 
+.timeline-hero {
+    padding-bottom: 24px;
+}
+
+.timeline-page {
+    display: grid;
+    grid-template-columns: minmax(260px, 0.44fr) minmax(0, 1fr);
+    gap: clamp(24px, 5vw, 52px);
+    align-items: start;
+}
+
+.timeline-form,
+.timeline-post,
+.timeline-empty {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    border-radius: 8px;
+    box-shadow: 0 10px 24px rgba(38, 56, 77, 0.05);
+}
+
+.timeline-form {
+    position: sticky;
+    top: 100px;
+    display: grid;
+    gap: 18px;
+    padding: 22px;
+}
+
+.form-row {
+    display: grid;
+    gap: 7px;
+}
+
+.form-row label {
+    color: var(--heading);
+    font-size: 0.9rem;
+    font-weight: 800;
+}
+
+.form-row input,
+.form-row textarea {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 11px 12px;
+    background: white;
+    color: var(--ink);
+    font: inherit;
+}
+
+.form-row textarea {
+    resize: vertical;
+}
+
+.timeline-form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.timeline-form-footer p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+}
+
+.timeline-form button {
+    border: 0;
+    cursor: pointer;
+    font: inherit;
+}
+
+.timeline-posts {
+    display: grid;
+    gap: 16px;
+}
+
+.timeline-post {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 16px;
+    padding: 20px;
+}
+
+.timeline-avatar {
+    display: grid;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    border-radius: 8px;
+    background: var(--mist);
+    color: var(--heading);
+    font-weight: 800;
+}
+
+.timeline-post-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.timeline-post-header h2 {
+    margin-bottom: 4px;
+    font-size: 1.12rem;
+}
+
+.timeline-post-header time,
+.timeline-email {
+    color: var(--muted);
+    font-size: 0.92rem;
+}
+
+.timeline-email {
+    margin-bottom: 12px;
+    color: var(--denim);
+    font-weight: 700;
+}
+
+.timeline-post p:last-child,
+.timeline-empty p {
+    margin-bottom: 0;
+}
+
+.timeline-empty {
+    padding: 24px;
+}
+
 @media (max-width: 920px) {
     .hero {
         grid-template-columns: 1fr;
@@ -442,11 +570,13 @@ h3 {
     .about-grid,
     .split,
     .travel-layout,
-    .hobby-feature {
+    .hobby-feature,
+    .timeline-page {
         grid-template-columns: 1fr;
     }
 
-    .section-heading {
+    .section-heading,
+    .timeline-form {
         position: static;
     }
 

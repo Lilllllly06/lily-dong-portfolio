@@ -39,6 +39,7 @@ NAV_ITEMS = [
     {"label": "Projects", "endpoint": "index", "fragment": "projects"},
     {"label": "Places", "endpoint": "index", "fragment": "places"},
     {"label": "Hobbies", "endpoint": "hobbies"},
+    {"label": "Timeline", "endpoint": "timeline"},
 ]
 
 SKILLS = [
@@ -222,6 +223,15 @@ def hobbies():
         title="Hobbies",
         url=os.getenv("URL"),
         hobbies=HOBBIES,
+    )
+
+
+@app.route("/timeline")
+def timeline():
+    return render_template(
+        "timeline.html",
+        title="Timeline",
+        url=os.getenv("URL"),
     )
 
 
