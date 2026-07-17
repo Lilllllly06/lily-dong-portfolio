@@ -8,13 +8,18 @@ from playhouse.shortcuts import model_to_dict
 
 load_dotenv()
 app = Flask(__name__)
-mydb = MySQLDatabase(
-    os.getenv("MYSQL_DATABASE"),
-    user=os.getenv("MYSQL_USER"),
-    password=os.getenv("MYSQL_PASSWORD"),
-    host=os.getenv("MYSQL_HOST"),
-    port=3306,
-)
+
+if os.getenv("TESTING") == "true":
+    print("Running in test mode")
+    mydb = SqliteDatabase("file:memory?mode=memory&cache=shared", uri=True)
+else:
+    mydb = MySQLDatabase(
+        os.getenv("MYSQL_DATABASE"),
+        user=os.getenv("MYSQL_USER"),
+        password=os.getenv("MYSQL_PASSWORD"),
+        host=os.getenv("MYSQL_HOST"),
+        port=3306,
+    )
 
 
 class TimelinePost(Model):
@@ -29,7 +34,10 @@ class TimelinePost(Model):
 
 mydb.connect(reuse_if_open=True)
 mydb.create_tables([TimelinePost])
-mydb.close()
+# In test mode, keep the connection open: a shared in-memory sqlite database
+# is destroyed once its last connection closes.
+if os.getenv("TESTING") != "true":
+    mydb.close()
 
 
 NAV_ITEMS = [
@@ -196,7 +204,7 @@ def before_request():
 
 @app.after_request
 def after_request(response):
-    if not mydb.is_closed():
+    if os.getenv("TESTING") != "true" and not mydb.is_closed():
         mydb.close()
     return response
 
@@ -238,16 +246,21 @@ def timeline():
 @app.route("/api/timeline_post", methods=["POST"])
 def post_timeline_post():
     data = request.get_json(silent=True) or request.form
-    required_fields = ("name", "email", "content")
-    missing_fields = [field for field in required_fields if not data.get(field)]
+    name = data.get("name")
+    email = data.get("email")
+    content = data.get("content")
 
-    if missing_fields:
-        return {"error": f"Missing required fields: {', '.join(missing_fields)}"}, 400
+    if name is None or name == "":
+        return "Invalid name", 400
+    if content is None or content == "":
+        return "Invalid content", 400
+    if email is None or "@" not in email:
+        return "Invalid email", 400
 
     timeline_post = TimelinePost.create(
-        name=data.get("name"),
-        email=data.get("email"),
-        content=data.get("content"),
+        name=name,
+        email=email,
+        content=content,
     )
 
     return model_to_dict(timeline_post), 201
