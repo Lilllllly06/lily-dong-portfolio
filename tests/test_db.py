@@ -6,7 +6,7 @@ os.environ['TESTING'] = 'true'
 
 from peewee import *
 
-from app import TimelinePost
+from app import TimelinePost, mydb
 
 MODELS = [TimelinePost]
 
@@ -31,6 +31,7 @@ class TestTimelinePost(unittest.TestCase):
 
         # Close connection to db.
         test_db.close()
+        mydb.bind(MODELS, bind_refs=False, bind_backrefs=False)
 
     def test_timeline_post(self):
         # Create 2 timeline posts.

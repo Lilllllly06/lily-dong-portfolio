@@ -7,10 +7,17 @@ os.environ['TESTING'] = 'true'
 from app import app, mydb, TimelinePost
 
 
+MODELS = [TimelinePost]
+
+
 class AppTestCase(unittest.TestCase):
     def setUp(self):
         self.client = app.test_client()
         # Start each test with an empty timeline table.
+        mydb.bind(MODELS, bind_refs=False, bind_backrefs=False)
+        if mydb.is_closed():
+            mydb.connect()
+        mydb.create_tables(MODELS, safe=True)
         TimelinePost.delete().execute()
 
     def test_home(self):
