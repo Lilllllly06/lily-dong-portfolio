@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-hero timeline-hero">
+    <p class="eyebrow">Timeline</p>
+    <h1>Leave a note on my timeline.</h1>
+    <p>
+        Add a short message, and it will appear below with the newest posts first.
+    </p>
+</section>
+
+<section class="section timeline-page">
+    <form class="timeline-form" id="timeline-form">
+        <div class="form-row">
+            <label for="timeline-name">Name</label>
+            <input id="timeline-name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="form-row">
+            <label for="timeline-email">Email</label>
+            <input id="timeline-email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="form-row">
+            <label for="timeline-content">Message</label>
+            <textarea id="timeline-content" name="content" rows="4" required></textarea>
+        </div>
+        <div class="timeline-form-footer">
+            <p id="timeline-status" aria-live="polite"></p>
+            <button class="primary-link" type="submit">Post</button>
+        </div>
+    </form>
+
+    <div class="timeline-posts" id="timeline-posts" aria-live="polite"></div>
+</section>
+
+<script>
+const form = document.querySelector("#timeline-form");
+const postsContainer = document.querySelector("#timeline-posts");
+const statusText = document.querySelector("#timeline-status");
+
+function formatDate(dateValue) {
+    const date = new Date(dateValue);
+
+    if (Number.isNaN(date.getTime())) {
+        return "Just now";
+    }
+
+    return new Intl.DateTimeFormat("en", {
+        dateStyle: "medium",
+        timeStyle: "short",
+    }).format(date);
+}
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (character) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;",
+    }[character]));
+}
+
+function postTemplate(post) {
+    const name = escapeHTML(post.name);
+    const email = escapeHTML(post.email);
+    const content = escapeHTML(post.content);
+    const createdAt = escapeHTML(post.created_at);
+    const initial = escapeHTML((post.name || "?").trim().charAt(0).toUpperCase() || "?");
+
+    return `
+        <article class="timeline-post">
+            <div class="timeline-avatar" aria-hidden="true">${initial}</div>
+            <div>
+                <div class="timeline-post-header">
+                    <h2>${name}</h2>
+                    <time datetime="${createdAt}">${formatDate(post.created_at)}</time>
+                </div>
+                <p class="timeline-email">${email}</p>
+                <p>${content}</p>
+            </div>
+        </article>
+    `;
+}
+
+function renderPosts(posts) {
+    if (posts.length === 0) {
+        postsContainer.innerHTML = `
+            <article class="timeline-empty">
+                <h2>No posts yet</h2>
+                <p>Be the first person to add something here.</p>
+            </article>
+        `;
+        return;
+    }
+
+    postsContainer.innerHTML = posts.map(postTemplate).join("");
+}
+
+async function loadPosts() {
+    const response = await fetch("/api/timeline_post");
+    const data = await response.json();
+    renderPosts(data.timeline_posts);
+}
+
+form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    statusText.textContent = "Posting...";
+
+    const formData = new FormData(form);
+    const response = await fetch("/api/timeline_post", {
+        method: "POST",
+        body: formData,
+    });
+
+    if (!response.ok) {
+        statusText.textContent = "Could not add the post. Please try again.";
+        return;
+    }
+
+    form.reset();
+    statusText.textContent = "Posted.";
+    await loadPosts();
+});
+
+loadPosts().catch(() => {
+    statusText.textContent = "Could not load timeline posts.";
+});
+</script>
+{% endblock %}
