@@ -1,0 +1,10 @@
+.git
+.venv
+venv
+__pycache__
+*.pyc
+.env
+.DS_Store
+outputs
+week4-submissions
+week5-submissions
