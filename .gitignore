@@ -1,7 +1,9 @@
-.venv
-__pycache__
+.venv/
+__pycache__/
 *.pyc
 .env
-python3-virtualenv
+python3-virtualenv/
 flask.sqlite
 .DS_Store
+outputs/
+week*-submissions/
