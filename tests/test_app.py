@@ -32,6 +32,18 @@ class AppTestCase(unittest.TestCase):
         assert "University of Waterloo" in html
         assert "Shopify" in html
 
+    def test_health(self):
+        response = self.client.get("/health")
+
+        assert response.status_code == 200
+        assert response.get_json() == {
+            "services": {
+                "application": "healthy",
+                "database": "healthy",
+            },
+            "status": "healthy",
+        }
+
     def test_timeline(self):
         response = self.client.get("/api/timeline_post")
         assert response.status_code == 200

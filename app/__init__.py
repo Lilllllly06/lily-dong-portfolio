@@ -2,7 +2,7 @@ import datetime
 import os
 
 from dotenv import load_dotenv
-from flask import Flask, render_template, request
+from flask import Flask, jsonify, render_template, request
 from peewee import *
 from playhouse.shortcuts import model_to_dict
 
@@ -221,6 +221,23 @@ def index():
         projects=PROJECTS,
         hobbies=HOBBIES,
         places=PLACES,
+    )
+
+
+@app.route("/health")
+def health():
+    try:
+        mydb.execute_sql("SELECT 1")
+    except Exception:
+        app.logger.exception("Database health check failed")
+        return jsonify(
+            status="unhealthy",
+            services={"application": "healthy", "database": "unhealthy"},
+        ), 503
+
+    return jsonify(
+        status="healthy",
+        services={"application": "healthy", "database": "healthy"},
     )
 
 
